@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreeMC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .transition-scale { transition: transform 0.3s ease; }
+    .transition-scale:hover { transform: scale(1.03); }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
+
+  <div class="flex h-screen">
+    <aside class="w-48 bg-gray-900 p-4 space-y-4">
+      <button class="tab w-full text-left py-2 px-3 rounded hover:bg-gray-700" data-type="worlds">Worlds</button>
+      <button class="tab w-full text-left py-2 px-3 rounded hover:bg-gray-700" data-type="addons">Addons</button>
+      <button class="tab w-full text-left py-2 px-3 rounded hover:bg-gray-700" data-type="textures">Textures</button>
+      <button class="tab w-full text-left py-2 px-3 rounded hover:bg-gray-700" data-type="skins">Skins</button>
+    </aside>
+
+    <main class="flex-1 p-6 overflow-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h1 id="section-title" class="text-2xl font-bold capitalize">Worlds</h1>
+        <div class="relative">
+          <button id="search-toggle" class="p-2 rounded-full hover:bg-gray-800">🔍</button>
+          <input id="search-input" type="text" placeholder="Search..." class="absolute right-0 top-full mt-2 bg-gray-800 text-white px-3 py-1 rounded shadow hidden" />
+        </div>
+      </div>
+
+      <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div id="no-results" class="text-gray-400 text-center mt-8 hidden">No results found.</div>
+    </main>
+  </div>
+
+  <script>
+    let currentTab = 'worlds';
+    let allData = {};
+
+    const tabs = document.querySelectorAll('.tab');
+    const sectionTitle = document.getElementById('section-title');
+    const grid = document.getElementById('grid');
+    const searchToggle = document.getElementById('search-toggle');
+    const searchInput = document.getElementById('search-input');
+    const noResults = document.getElementById('no-results');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        currentTab = tab.dataset.type;
+        sectionTitle.textContent = currentTab;
+        tabs.forEach(t => t.classList.remove('bg-gray-800'));
+        tab.classList.add('bg-gray-800');
+        renderGrid();
+      });
+    });
+
+    searchToggle.addEventListener('click', () => {
+      searchInput.classList.toggle('hidden');
+      if (!searchInput.classList.contains('hidden')) searchInput.focus();
+    });
+
+    searchInput.addEventListener('input', renderGrid);
+
+    function truncate(text, max = 100) {
+      return text.length > max ? text.slice(0, max) + '...' : text;
+    }
+
+    function createCard(item) {
+      return `
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale">
+          <img src="${item.banner}" alt="${item.title}" class="w-full h-40 object-cover" />
+          <div class="p-4">
+            <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
+            <p class="text-gray-300 text-sm mb-4">${truncate(item.desc)}</p>
+            <div class="flex space-x-2">
+              <a href="${item.download}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Download</a>
+              <a href="${item.marketplace}" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded">Marketplace</a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGrid() {
+      const items = (allData[currentTab] || []).filter(item => {
+        const q = searchInput.value.toLowerCase();
+        return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
+      });
+
+      grid.innerHTML = items.map(createCard).join('');
+      noResults.classList.toggle('hidden', items.length > 0);
+    }
+
+    fetch('./api.json')
+      .then(res => res.json())
+      .then(data => {
+        allData = data;
+        renderGrid();
+      })
+      .catch(err => {
+        grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
