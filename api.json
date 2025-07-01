@@ -1,0 +1,66 @@
+{
+  "worlds": [
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/world1.jpg",
+      "download": "https://example.com/downloads/modern-city.mcworld",
+      "marketplace": "https://marketplace.example.com/modern-city"
+    },
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/fantasy-island.jpg",
+      "download": "https://example.com/downloads/fantasy-island.mcworld",
+      "marketplace": "https://marketplace.example.com/fantasy-island"
+    }
+  ],
+  "addons": [
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/furniture-addon.jpg",
+      "download": "https://example.com/downloads/furniture-addon.mcaddon",
+      "marketplace": "https://marketplace.example.com/furniture-addon"
+    },
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/more-animals.jpg",
+      "download": "https://example.com/downloads/more-animals.mcaddon",
+      "marketplace": "https://marketplace.example.com/more-animals"
+    }
+  ],
+  "textures": [
+    {
+      "title": "Actions & Stuff 1.4.1",
+      "desc": "The Animation Pack You Didn't Know You Needed: Bring your world to life with new animations, particles, textures, and more!",
+      "banner": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/28ddc201-d247-4c97-abf5-e325b054ae9a/actionsandstuff_Thumbnail_0.jpg",
+      "download": "https://example.com/downloads/realistic-textures.mcpack",
+      "marketplace": "https://marketplace.example.com/realistic-textures"
+    },
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/retro-pack.jpg",
+      "download": "https://example.com/downloads/retro-pack.mcpack",
+      "marketplace": "https://marketplace.example.com/retro-pack"
+    }
+  ],
+  "skins": [
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/cyber-warrior.jpg",
+      "download": "https://example.com/downloads/cyber-warrior.mcpack",
+      "marketplace": "https://marketplace.example.com/cyber-warrior"
+    },
+    {
+      "title": "test",
+      "desc": "test.",
+      "banner": "https://example.com/images/creeper-hoodie.jpg",
+      "download": "https://example.com/downloads/creeper-hoodie.mcpack",
+      "marketplace": "https://marketplace.example.com/creeper-hoodie"
+    }
+  ]
+}
