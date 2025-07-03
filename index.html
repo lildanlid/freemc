@@ -7,8 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    .transition-scale { transition: transform 0.3s ease; }
-    .transition-scale:hover { transform: scale(1.02); }
+    .transition-scale { transition: transform 0.3s ease, opacity 0.5s ease; opacity: 0; transform: translateY(10px); }
+    .card-loaded { opacity: 1 !important; transform: translateY(0) !important; }
     .material-icons { font-size: 24px; }
     .tooltip {
       position: relative;
@@ -44,7 +44,7 @@
       transform: scale(1.1);
     }
     .tab.active {
-      background-color: #2563eb;
+      background-color: rgba(37, 99, 235, 0.6);
       color: white;
       transform: scale(1.15);
     }
@@ -111,9 +111,9 @@
       return text.length > max ? text.slice(0, max) + '...' : text;
     }
 
-    function createCard(item) {
+    function createCard(item, index) {
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale">
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale delay-${index * 75}" style="animation-delay: ${index * 75}ms">
           <img src="${item.banner}" alt="${item.title}" class="w-full h-64 object-cover bg-black" />
           <div class="p-4">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
@@ -139,7 +139,14 @@
         return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
       });
 
-      grid.innerHTML = items.map(createCard).join('');
+      grid.innerHTML = items.map((item, i) => createCard(item, i)).join('');
+
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.transition-scale').forEach(el => {
+          setTimeout(() => el.classList.add('card-loaded'), 10);
+        });
+      });
+
       noResults.classList.toggle('hidden', items.length > 0);
     }
 
