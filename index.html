@@ -7,9 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    .transition-scale { transition: transform 0.3s ease, opacity 0.5s ease; opacity: 0; transform: translateY(10px); }
-    .card-loaded { opacity: 1 !important; transform: translateY(0) !important; }
-    .material-icons { font-size: 24px; }
+    .transition-scale { transition: transform 0.3s ease; }
+    .transition-scale:hover { transform: scale(1.02); }
+
+    .material-icons { font-size: 24px; transition: color 0.3s ease; }
+
     .tooltip {
       position: relative;
       display: inline-block;
@@ -34,26 +36,61 @@
     .tooltip:hover::after {
       opacity: 1;
     }
+
     .tab {
       transition: all 0.3s ease;
-      border-radius: 0.75rem;
       padding: 0.75rem;
+      border-radius: 0.75rem;
     }
-    .tab:hover {
-      background-color: #374151;
-      transform: scale(1.1);
+    .tab:hover .material-icons {
+      color: #60a5fa;
     }
-    .tab.active {
-      background-color: rgba(37, 99, 235, 0.6);
-      color: white;
-      transform: scale(1.15);
+    .tab.active .material-icons {
+      color: #3b82f6;
+    }
+
+    .background-stripes {
+      background-image: repeating-linear-gradient(
+        45deg,
+        #0f172a 0,
+        #0f172a 10px,
+        #111827 10px,
+        #111827 20px
+      );
+    }
+
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      animation: floatUp 10s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body class="relative text-white">
 
-  <div class="absolute inset-0 z-[-1]">
-    <div class="h-full w-full bg-[#000000] bg-[radial-gradient(#ffffff11_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
+  <div class="absolute inset-0 z-[-1] background-stripes overflow-hidden">
+    <div class="dot" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="dot" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="dot" style="left: 50%; animation-delay: 4s;"></div>
+    <div class="dot" style="left: 70%; animation-delay: 1s;"></div>
+    <div class="dot" style="left: 90%; animation-delay: 3s;"></div>
   </div>
 
   <div class="flex h-screen">
@@ -111,9 +148,9 @@
       return text.length > max ? text.slice(0, max) + '...' : text;
     }
 
-    function createCard(item, index) {
+    function createCard(item) {
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale delay-${index * 75}" style="animation-delay: ${index * 75}ms">
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale animate-fade-in">
           <img src="${item.banner}" alt="${item.title}" class="w-full h-64 object-cover bg-black" />
           <div class="p-4">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
@@ -139,14 +176,7 @@
         return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
       });
 
-      grid.innerHTML = items.map((item, i) => createCard(item, i)).join('');
-
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.transition-scale').forEach(el => {
-          setTimeout(() => el.classList.add('card-loaded'), 10);
-        });
-      });
-
+      grid.innerHTML = items.map(createCard).join('');
       noResults.classList.toggle('hidden', items.length > 0);
     }
 
