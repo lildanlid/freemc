@@ -34,12 +34,29 @@
     .tooltip:hover::after {
       opacity: 1;
     }
+    .tab {
+      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+    }
+    .tab:hover {
+      background-color: #374151;
+      transform: scale(1.1);
+    }
+    .tab.active {
+      background-color: #2563eb;
+      color: white;
+      transform: scale(1.15);
+    }
   </style>
 </head>
-<body class="bg-gray-950 text-white">
+<body class="relative text-white">
+
+  <div class="absolute inset-0 z-[-1]">
+    <div class="h-full w-full bg-[#000000] bg-[radial-gradient(#ffffff11_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
+  </div>
 
   <div class="flex h-screen">
-    <!-- Sidebar -->
     <aside class="w-16 bg-gray-900 m-2 rounded-2xl p-4 flex flex-col items-center space-y-6">
       <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
         <span class="material-icons">public</span>
@@ -82,8 +99,8 @@
       tab.addEventListener('click', () => {
         currentTab = tab.dataset.type;
         sectionTitle.textContent = currentTab;
-        tabs.forEach(t => t.classList.remove('bg-gray-700'));
-        tab.classList.add('bg-gray-700');
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
         renderGrid();
       });
     });
@@ -97,7 +114,7 @@
     function createCard(item) {
       return `
         <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale">
-          <img src="${item.banner}" alt="${item.title}" class="w-full h-40 object-cover bg-black" />
+          <img src="${item.banner}" alt="${item.title}" class="w-full h-64 object-cover bg-black" />
           <div class="p-4">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
             <p class="text-gray-300 text-sm mb-4">${truncate(item.desc)}</p>
@@ -131,6 +148,7 @@
       .then(data => {
         allData = data;
         renderGrid();
+        document.querySelector(`.tab[data-type="${currentTab}"]`).classList.add('active');
       })
       .catch(err => {
         grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
