@@ -43,19 +43,25 @@
       border-radius: 0.75rem;
     }
     .tab:hover .material-icons {
-      color: #60a5fa;
+      color: #38bdf8;
     }
     .tab.active .material-icons {
-      color: #3b82f6;
+      color: rgba(59, 130, 246, 0.7);
     }
 
-    .background-stripes {
-      background-image: repeating-linear-gradient(
+    .background-polaris {
+      background: repeating-linear-gradient(
         45deg,
-        #0f172a 0,
-        #0f172a 10px,
-        #111827 10px,
-        #111827 20px
+        #0f172a 0px,
+        #0f172a 1px,
+        rgba(255, 255, 255, 0.05) 1px,
+        rgba(255, 255, 255, 0.05) 2px,
+        #0f172a 2px,
+        #0f172a 18px,
+        rgba(255, 255, 255, 0.1) 18px,
+        rgba(255, 255, 255, 0.1) 19px,
+        #0f172a 19px,
+        #0f172a 35px
       );
     }
 
@@ -63,9 +69,9 @@
       position: absolute;
       width: 6px;
       height: 6px;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
       border-radius: 9999px;
-      animation: floatUp 10s linear infinite;
+      animation: floatUp 12s linear infinite;
     }
 
     @keyframes floatUp {
@@ -85,16 +91,21 @@
 </head>
 <body class="relative text-white">
 
-  <div class="absolute inset-0 z-[-1] background-stripes overflow-hidden">
-    <div class="dot" style="left: 10%; animation-delay: 0s;"></div>
-    <div class="dot" style="left: 30%; animation-delay: 2s;"></div>
-    <div class="dot" style="left: 50%; animation-delay: 4s;"></div>
-    <div class="dot" style="left: 70%; animation-delay: 1s;"></div>
-    <div class="dot" style="left: 90%; animation-delay: 3s;"></div>
+  <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
+    <div class="dot" style="left: 5%; animation-delay: 0s;"></div>
+    <div class="dot" style="left: 15%; animation-delay: 1s;"></div>
+    <div class="dot" style="left: 25%; animation-delay: 2s;"></div>
+    <div class="dot" style="left: 35%; animation-delay: 3s;"></div>
+    <div class="dot" style="left: 45%; animation-delay: 4s;"></div>
+    <div class="dot" style="left: 55%; animation-delay: 2s;"></div>
+    <div class="dot" style="left: 65%; animation-delay: 3s;"></div>
+    <div class="dot" style="left: 75%; animation-delay: 1s;"></div>
+    <div class="dot" style="left: 85%; animation-delay: 0.5s;"></div>
+    <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
   </div>
 
   <div class="flex h-screen">
-    <aside class="w-16 bg-gray-900 m-2 rounded-2xl p-4 flex flex-col items-center space-y-6">
+    <aside class="w-20 bg-gray-800 m-4 rounded-3xl p-6 flex flex-col items-center space-y-10 shadow-lg">
       <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
         <span class="material-icons">public</span>
       </button>
