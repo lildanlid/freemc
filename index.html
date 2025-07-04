@@ -8,6 +8,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="icon" href="https://i.ibb.co/PZqhhj9Y/Minecoin-Logo-removebg-preview.png" type="image/png">
   <style>
+    html, body {
+      min-height: 100%;
+      height: auto;
+    }
+
     .transition-scale { transition: transform 0.3s ease; }
     .transition-scale:hover { transform: scale(1.02); }
 
@@ -64,6 +69,7 @@
         #0f172a 19px,
         #0f172a 35px
       );
+      min-height: 100vh;
     }
 
     .dot {
@@ -90,7 +96,7 @@
     }
   </style>
 </head>
-<body class="relative text-white">
+<body class="relative text-white min-h-screen">
   <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
     <div class="dot" style="left: 5%; animation-delay: 0s;"></div>
     <div class="dot" style="left: 15%; animation-delay: 1s;"></div>
@@ -104,7 +110,7 @@
     <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
   </div>
 
-  <div class="flex flex-col md:flex-row h-screen">
+  <div class="flex flex-col md:flex-row min-h-screen">
     <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
       <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
         <span class="material-icons">public</span>
@@ -148,7 +154,7 @@
         currentTab = tab.dataset.type;
         sectionTitle.textContent = currentTab;
         tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');tq
+        tab.classList.add('active');
         renderGrid();
       });
     });
@@ -166,13 +172,13 @@
           <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
             <p class="text-gray-300 text-sm mb-4 flex-grow">${truncate(item.desc)}</p>
-            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full">
               <a href="${item.download}" target="_blank"
-                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
+                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 w-full">
                 <span class="material-icons">download</span><span>Download</span>
               </a>
               <a href="${item.marketplace}" target="_blank"
-                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
+                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 w-full">
                 <span class="material-icons">storefront</span><span>Marketplace</span>
               </a>
             </div>
@@ -191,7 +197,7 @@
       noResults.classList.toggle('hidden', items.length > 0);
     }
 
-    fetch('./api.json')
+    fetch('https://free-marketplce.netlify.app/api.json')
       .then(res => res.json())
       .then(data => {
         allData = data;
