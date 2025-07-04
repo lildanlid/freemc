@@ -104,8 +104,8 @@
     <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
   </div>
 
-  <div class="flex h-screen">
-    <aside class="w-20 bg-gray-800 m-4 rounded-3xl p-6 flex flex-col items-center space-y-10 shadow-lg">
+  <div class="flex flex-col md:flex-row h-screen">
+    <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
       <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
         <span class="material-icons">public</span>
       </button>
@@ -128,7 +128,7 @@
 
       <h1 id="section-title" class="text-2xl font-bold capitalize mb-4">Worlds</h1>
 
-      <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       <div id="no-results" class="text-gray-400 text-center mt-8 hidden">No results found.</div>
     </main>
   </div>
@@ -148,7 +148,7 @@
         currentTab = tab.dataset.type;
         sectionTitle.textContent = currentTab;
         tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+        tab.classList.add('active');tq
         renderGrid();
       });
     });
@@ -161,19 +161,18 @@
 
     function createCard(item) {
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale animate-fade-in">
-          <img src="${item.banner}" alt="${item.title}"
-               class="w-full h-auto max-h-64 object-contain bg-black mx-auto" />
-          <div class="p-4">
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale animate-fade-in flex flex-col justify-between">
+          <img src="${item.banner}" alt="${item.title}" class="w-full h-64 object-cover bg-black" />
+          <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
-            <p class="text-gray-300 text-sm mb-4">${truncate(item.desc)}</p>
-            <div class="flex space-x-2">
+            <p class="text-gray-300 text-sm mb-4 flex-grow">${truncate(item.desc)}</p>
+            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
               <a href="${item.download}" target="_blank"
-                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded flex items-center space-x-1">
+                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
                 <span class="material-icons">download</span><span>Download</span>
               </a>
               <a href="${item.marketplace}" target="_blank"
-                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded flex items-center space-x-1">
+                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
                 <span class="material-icons">storefront</span><span>Marketplace</span>
               </a>
             </div>
