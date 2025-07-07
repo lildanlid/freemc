@@ -32,7 +32,8 @@
     }
   ],
   "textures": [
-"title": "Actions & Stuff 1.5",
+    {
+      "title": "Actions & Stuff 1.5",
       "desc": "The Animation Pack You Didn't Know You Needed: Bring your world to life with new animations, particles, textures, and more!",
       "media": [
         "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/a4900a03-b7a3-4a06-90dc-8518bd5b4eb0/actionsandstuff_Thumbnail_0.jpg",
@@ -49,7 +50,9 @@
     {
       "title": "test",
       "desc": "test.",
-      "media": "https://example.com/images/retro-pack.jpg",
+      "media": [
+        "https://example.com/images/retro-pack.jpg",
+      ],
       "download": "https://example.com/downloads/retro-pack.mcpack",
       "marketplace": "https://marketplace.example.com/retro-pack"
     }
