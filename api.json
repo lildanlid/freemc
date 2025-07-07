@@ -32,17 +32,24 @@
     }
   ],
   "textures": [
-    {
-      "title": "Actions & Stuff 1.5",
+"title": "Actions & Stuff 1.5",
       "desc": "The Animation Pack You Didn't Know You Needed: Bring your world to life with new animations, particles, textures, and more!",
-      "banner": "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/28ddc201-d247-4c97-abf5-e325b054ae9a/actionsandstuff_Thumbnail_0.jpg",
+      "media": [
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/a4900a03-b7a3-4a06-90dc-8518bd5b4eb0/actionsandstuff_Thumbnail_0.jpg",
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/703d15cc-bb26-497b-aa53-53caff02b387/actionsandstuff_screenshot_1.jpg",
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/067f511d-e426-445b-8d6a-cbc34b6d161d/actionsandstuff_screenshot_2.jpg",
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/60eb6310-da29-4f11-80eb-5f776aad5a7b/actionsandstuff_screenshot_3.jpg",
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/b2b8d3ec-7e87-4bca-86a4-a0a764d9357e/actionsandstuff_screenshot_4.jpg",
+        "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/f1a4e4f0-4992-4ff5-9a4b-e31a091b95b6/actionsandstuff_screenshot_5.jpg",
+        "https://www.youtube.com/watch?v=VDk8niB2Obw"
+      ],
       "download": "https://files.catbox.moe/77najv.mcpack",
       "marketplace": "https://www.minecraft.net/en-us/marketplace/pdp/oreville-studios/actions--stuff-1.5/61c7a786-d7ad-49e0-a710-817121cd9795"
     },
     {
       "title": "test",
       "desc": "test.",
-      "banner": "https://example.com/images/retro-pack.jpg",
+      "media": "https://example.com/images/retro-pack.jpg",
       "download": "https://example.com/downloads/retro-pack.mcpack",
       "marketplace": "https://marketplace.example.com/retro-pack"
     }
