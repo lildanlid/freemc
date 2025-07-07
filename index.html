@@ -127,140 +127,62 @@
     <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
   </div>
 
-  <div class="flex flex-col md:flex-row min-h-screen">
-    <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
-      <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
-        <span class="material-icons">public</span>
-      </button>
-      <button class="tab tooltip" data-type="addons" data-tip="Addons">
-        <span class="material-icons">extension</span>
-      </button>
-      <button class="tab tooltip" data-type="textures" data-tip="Textures">
-        <span class="material-icons">palette</span>
-      </button>
-      <button class="tab tooltip" data-type="skins" data-tip="Skins">
-        <span class="material-icons">checkroom</span>
-      </button>
-    </aside>
-
-    <main class="flex-1 p-4">
-      <div id="search-container" class="transition-all duration-300 mb-6">
-        <input id="search-input" type="text" placeholder="Search..."
-               class="w-full text-white bg-gray-800 px-4 py-3 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  <main class="p-8">
+    <div class="max-w-2xl mx-auto bg-gray-800 rounded-xl p-6 transition-scale shadow-lg">
+      <h2 class="text-2xl font-bold mb-4">Media Carousel</h2>
+      <div class="aspect-video w-full rounded-xl overflow-hidden mb-4" id="carousel">
       </div>
-
-      <h1 id="section-title" class="text-2xl font-bold capitalize mb-4">Worlds</h1>
-
-      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      <div id="no-results" class="text-gray-400 text-center mt-8 hidden">No results found.</div>
-    </main>
-  </div>
-
-  <div class="relative w-full bg-gray-900 text-white text-center py-3 text-sm z-40 shadow-inner flex justify-center items-center space-x-2 mt-10">
-    <span class="material-icons text-blue-400">lightbulb</span>
-    <span>
-      Have suggestions? <a href="https://form.typeform.com/to/UyA2yq19" target="_blank" class="text-blue-400 underline hover:text-blue-300">Let us know here</a>.
-    </span>
-  </div>
+      <div class="flex justify-center gap-2" id="carousel-dots"></div>
+    </div>
+  </main>
 
   <script>
-    let currentTab = 'worlds';
-    let allData = JSON.parse(localStorage.getItem('freemcData')) || {};
-    const tabs = document.querySelectorAll('.tab');
-    const sectionTitle = document.getElementById('section-title');
-    const grid = document.getElementById('grid');
-    const searchInput = document.getElementById('search-input');
-    const noResults = document.getElementById('no-results');
+    const mediaItems = [
+      "https://i.ibb.co/zNGM5Tr/skyblock.png",
+      "https://www.youtube.com/embed/VDk8niB2Obw"
+    ];
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        currentTab = tab.dataset.type;
-        sectionTitle.textContent = currentTab;
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderGrid();
-      });
-    });
+    let currentIndex = 0;
 
-    searchInput.addEventListener('input', renderGrid);
+    const carousel = document.getElementById('carousel');
+    const dotsContainer = document.getElementById('carousel-dots');
 
-    function truncate(text, max = 100) {
-      return text.length > max ? text.slice(0, max) + '...' : text;
+    function renderMedia(index) {
+      const url = mediaItems[index];
+      carousel.innerHTML = '';
+
+      if (url.includes("youtube.com/embed")) {
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.className = 'w-full h-full';
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        carousel.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'w-full h-full object-cover';
+        carousel.appendChild(img);
+      }
+
+      updateDots(index);
     }
 
-    function createCarousel(images = []) {
-      if (images.length === 0) return '';
-      const dots = images.map((_, i) => `<span class="carousel-dot" data-index="${i}"></span>`).join('');
-      return `
-        <div class="relative w-full overflow-hidden">
-          <img src="${images[0]}" class="carousel-img w-full object-contain bg-black max-h-80 rounded-t-2xl" />
-          <div class="absolute bottom-2 w-full text-center">${dots}</div>
-        </div>
-      `;
-    }
-
-    function createCard(item) {
-      const media = item.media || [item.banner];
-      return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
-          ${createCarousel(media)}
-          <div class="p-4 flex flex-col flex-grow">
-            <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
-            <p class="text-gray-300 text-sm mb-4 flex-grow">${truncate(item.desc)}</p>
-            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 card-buttons">
-              <a href="${item.download}" target="_blank"
-                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
-                <span class="material-icons">download</span><span>Download</span>
-              </a>
-              <a href="${item.marketplace}" target="_blank"
-                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
-                <span class="material-icons">storefront</span><span>Marketplace</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderGrid() {
-      const items = (allData[currentTab] || []).filter(item => {
-        const q = searchInput.value.toLowerCase();
-        return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
-      });
-
-      grid.innerHTML = items.map(createCard).join('');
-      noResults.classList.toggle('hidden', items.length > 0);
-
-      document.querySelectorAll('.carousel-dot').forEach(dot => {
-        dot.addEventListener('click', function () {
-          const index = +this.dataset.index;
-          const container = this.closest('.relative');
-          const img = container.querySelector('.carousel-img');
-          const media = allData[currentTab].find(item =>
-            item.media && item.media.includes(img.src)
-          )?.media;
-
-          if (media && media[index]) {
-            img.src = media[index];
-            container.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
-            this.classList.add('active');
-          }
+    function updateDots(activeIndex) {
+      dotsContainer.innerHTML = '';
+      mediaItems.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'carousel-dot' + (i === activeIndex ? ' active' : '');
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          renderMedia(currentIndex);
         });
+        dotsContainer.appendChild(dot);
       });
     }
 
-    fetch('./api.json')
-      .then(res => res.json())
-      .then(data => {
-        allData = data;
-        localStorage.setItem('freemcData', JSON.stringify(data));
-        renderGrid();
-        document.querySelector(`.tab[data-type=\"${currentTab}\"]`).classList.add('active');
-      })
-      .catch(err => {
-        grid.innerHTML = `<div class=\"text-red-500\">Failed to load API.</div>`;
-        console.error(err);
-      });
+    renderMedia(currentIndex);
   </script>
 </body>
 </html>
