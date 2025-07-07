@@ -1,34 +1,50 @@
 {
   "worlds": [
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/world1.jpg",
-      "download": "https://example.com/downloads/modern-city.mcworld",
-      "marketplace": "https://marketplace.example.com/modern-city"
+      "title": "Skyblock Survival",
+      "desc": "Survive on a tiny floating island with limited resources.",
+      "banner": "https://i.ibb.co/zNGM5Tr/skyblock.png",
+      "media": [
+        "https://i.ibb.co/zNGM5Tr/skyblock.png",
+        "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      ],
+      "download": "https://example.com/skyblock-download",
+      "marketplace": "https://example.com/skyblock-market"
     },
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/fantasy-island.jpg",
-      "download": "https://example.com/downloads/fantasy-island.mcworld",
-      "marketplace": "https://marketplace.example.com/fantasy-island"
+      "title": "Mega City Roleplay",
+      "desc": "Explore a huge urban world with buildings, trains and more.",
+      "banner": "https://i.ibb.co/whkFhDZ/megacity.png",
+      "media": [
+        "https://i.ibb.co/whkFhDZ/megacity.png",
+        "https://www.youtube.com/embed/5NV6Rdv1a3I"
+      ],
+      "download": "https://example.com/megacity-download",
+      "marketplace": "https://example.com/megacity-market"
     }
   ],
   "addons": [
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/furniture-addon.jpg",
-      "download": "https://example.com/downloads/furniture-addon.mcaddon",
-      "marketplace": "https://marketplace.example.com/furniture-addon"
+      "title": "Dinosaur Mod",
+      "desc": "Adds realistic dinosaurs with animations and sounds.",
+      "banner": "https://i.ibb.co/tL3kFJK/dino.png",
+      "media": [
+        "https://i.ibb.co/tL3kFJK/dino.png",
+        "https://www.youtube.com/embed/xvFZjo5PgG0"
+      ],
+      "download": "https://example.com/dino-download",
+      "marketplace": "https://example.com/dino-market"
     },
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/more-animals.jpg",
-      "download": "https://example.com/downloads/more-animals.mcaddon",
-      "marketplace": "https://marketplace.example.com/more-animals"
+      "title": "Furniture Expansion",
+      "desc": "Place sofas, TVs, fridges, and more to decorate your house.",
+      "banner": "https://i.ibb.co/GPnM2kH/furniture.png",
+      "media": [
+        "https://i.ibb.co/GPnM2kH/furniture.png",
+        "https://www.youtube.com/embed/L_jWHffIx5E"
+      ],
+      "download": "https://example.com/furniture-download",
+      "marketplace": "https://example.com/furniture-market"
     }
   ],
   "textures": [
@@ -48,29 +64,39 @@
       "marketplace": "https://www.minecraft.net/en-us/marketplace/pdp/oreville-studios/actions--stuff-1.5/61c7a786-d7ad-49e0-a710-817121cd9795"
     },
     {
-      "title": "test",
-      "desc": "test.",
+      "title": "Cartoon Shader",
+      "desc": "Make your game look like a comic book.",
+      "banner": "https://i.ibb.co/FsX8tKT/cartoon.png",
       "media": [
-        "https://example.com/images/retro-pack.jpg",
+        "https://i.ibb.co/FsX8tKT/cartoon.png",
+        "https://www.youtube.com/embed/eVTXPUF4Oz4"
       ],
-      "download": "https://example.com/downloads/retro-pack.mcpack",
-      "marketplace": "https://marketplace.example.com/retro-pack"
+      "download": "https://example.com/cartoon-download",
+      "marketplace": "https://example.com/cartoon-market"
     }
   ],
   "skins": [
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/cyber-warrior.jpg",
-      "download": "https://example.com/downloads/cyber-warrior.mcpack",
-      "marketplace": "https://marketplace.example.com/cyber-warrior"
+      "title": "Cyberpunk Outfit",
+      "desc": "Neon-lit, futuristic character designs for roleplay.",
+      "banner": "https://i.ibb.co/V9g8fpZ/cyberpunk.png",
+      "media": [
+        "https://i.ibb.co/V9g8fpZ/cyberpunk.png",
+        "https://www.youtube.com/embed/UceaB4D0jpo"
+      ],
+      "download": "https://example.com/cyberpunk-download",
+      "marketplace": "https://example.com/cyberpunk-market"
     },
     {
-      "title": "test",
-      "desc": "test.",
-      "banner": "https://example.com/images/creeper-hoodie.jpg",
-      "download": "https://example.com/downloads/creeper-hoodie.mcpack",
-      "marketplace": "https://marketplace.example.com/creeper-hoodie"
+      "title": "Fantasy Heroes",
+      "desc": "Skins inspired by knights, elves, and mages.",
+      "banner": "https://i.ibb.co/n0nJp8L/fantasy.png",
+      "media": [
+        "https://i.ibb.co/n0nJp8L/fantasy.png",
+        "https://www.youtube.com/embed/ktvTqknDobU"
+      ],
+      "download": "https://example.com/fantasy-download",
+      "marketplace": "https://example.com/fantasy-market"
     }
   ]
 }
