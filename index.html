@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="icon" href="https://i.ibb.co/PZqhhj9Y/Minecoin-Logo-removebg-preview.png" type="image/png">
-  
   <style>
     .transition-scale { transition: transform 0.3s ease; }
     .transition-scale:hover { transform: scale(1.02); }
@@ -89,6 +88,29 @@
         opacity: 0;
       }
     }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #aaa;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-dot.active {
+      background-color: #38bdf8;
+    }
+
+    .carousel-dot:hover {
+      background-color: #60a5fa;
+    }
+
+    .card-buttons a:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body class="relative text-white min-h-screen">
@@ -123,7 +145,8 @@
 
     <main class="flex-1 p-4">
       <div id="search-container" class="transition-all duration-300 mb-6">
-        <input id="search-input" type="text" placeholder="Search..." class="w-full text-white bg-gray-800 px-4 py-3 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input id="search-input" type="text" placeholder="Search..."
+               class="w-full text-white bg-gray-800 px-4 py-3 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <h1 id="section-title" class="text-2xl font-bold capitalize mb-4">Worlds</h1>
@@ -142,8 +165,7 @@
 
   <script>
     let currentTab = 'worlds';
-    let allData = {};
-
+    let allData = JSON.parse(localStorage.getItem('freemcData')) || {};
     const tabs = document.querySelectorAll('.tab');
     const sectionTitle = document.getElementById('section-title');
     const grid = document.getElementById('grid');
@@ -166,20 +188,32 @@
       return text.length > max ? text.slice(0, max) + '...' : text;
     }
 
-    function createCard(item) {
+    function createCarousel(images = []) {
+      if (images.length === 0) return '';
+      const dots = images.map((_, i) => `<span class="carousel-dot" data-index="${i}"></span>`).join('');
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale animate-fade-in flex flex-col justify-between">
-          <img src="${item.banner}" alt="${item.title}" class="w-full object-contain bg-black max-h-80" onerror="this.src='https://via.placeholder.com/150';" />
+        <div class="relative w-full overflow-hidden">
+          <img src="${images[0]}" class="carousel-img w-full object-contain bg-black max-h-80 rounded-t-2xl" />
+          <div class="absolute bottom-2 w-full text-center">${dots}</div>
+        </div>
+      `;
+    }
+
+    function createCard(item) {
+      const media = item.media || [item.banner];
+      return `
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
+          ${createCarousel(media)}
           <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
             <p class="text-gray-300 text-sm mb-4 flex-grow">${truncate(item.desc)}</p>
-            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 card-buttons">
               <a href="${item.download}" target="_blank"
-                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
+                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
                 <span class="material-icons">download</span><span>Download</span>
               </a>
               <a href="${item.marketplace}" target="_blank"
-                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1">
+                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
                 <span class="material-icons">storefront</span><span>Marketplace</span>
               </a>
             </div>
@@ -196,18 +230,36 @@
 
       grid.innerHTML = items.map(createCard).join('');
       noResults.classList.toggle('hidden', items.length > 0);
+
+      document.querySelectorAll('.carousel-dot').forEach(dot => {
+        dot.addEventListener('click', function () {
+          const index = +this.dataset.index;
+          const container = this.closest('.relative');
+          const img = container.querySelector('.carousel-img');
+          const media = allData[currentTab].find(item =>
+            item.media && item.media.includes(img.src)
+          )?.media;
+
+          if (media && media[index]) {
+            img.src = media[index];
+            container.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
+          }
+        });
+      });
     }
 
     fetch('./api.json')
       .then(res => res.json())
       .then(data => {
         allData = data;
+        localStorage.setItem('freemcData', JSON.stringify(data));
         renderGrid();
-        document.querySelector(`.tab[data-type="${currentTab}"]`).classList.add('active');
+        document.querySelector(`.tab[data-type=\"${currentTab}\"]`).classList.add('active');
       })
       .catch(err => {
-        grid.innerHTML = `<div class="text-red-500">Failed to load the data. Please try again later.</div>`;
-        console.error("Error loading data:", err);
+        grid.innerHTML = `<div class=\"text-red-500\">Failed to load API.</div>`;
+        console.error(err);
       });
   </script>
 </body>
