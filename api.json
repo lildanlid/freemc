@@ -1,14 +1,17 @@
 {
   "worlds": [
     {
-      "title": "?",
-      "desc": " .",
-      "banner": "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/f71453df-3c7c-49f2-ae93-1656c962312d/worldbuilder_Thumbnail_0.jpg",
+      "title": "Better On Bedrock 1.1.2",
+      "desc": "Explore a new world of Minecraft with Better on Bedrock, a new Dynamic World! There is tons to explore!",
       "media": [
-        "http://i.ibb.co/99tmyBGG/afaf35d4-c218-4b11-b5cc-4ea4fafab456.png"
+        "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/73c45243-02ab-4500-962a-3430843f1f67/betteronbedrock_Thumbnail_0.jpg",
+        "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/e6648965-f7ab-4b16-baba-ea4bf3c615ae/betteronbedrock_screenshot_0.jpg",
+        "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/79e032d7-8b88-4335-9ca9-9d17ecf0d186/betteronbedrock_screenshot_1.jpg",
+        "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/6bdf0de1-c720-41e9-87b3-27298be34de3/betteronbedrock_screenshot_2.jpg",
+        "https://xforgeassets002.xboxlive.com/pf-namespace-b63a0803d3653643/8e06962c-9d9b-4f81-be71-db7f540b51d0/betteronbedrock_screenshot_4.jpg"
       ],
-      "download": "https://example.com/skyblock-download",
-      "marketplace": "https://example.com/skyblock-market"
+      "download": "https://files.catbox.moe/ymntb9.mctemplate",
+      "marketplace": "https://www.minecraft.net/en-us/marketplace/pdp/poggy/better-on-bedrock-1.1.2/6c3a6979-dc77-41c6-b19e-0071dabedf71"
     },
     {
       "title": "?",
