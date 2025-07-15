@@ -11,10 +11,8 @@
     html, body { margin: 0; padding: 0; overflow-x: hidden; }
 
     #search-input:focus { outline: none; box-shadow: none; }
-
     .transition-scale { transition: transform 0.3s ease; }
     .transition-scale:hover { transform: scale(1.02); }
-
     .fade-in { animation: fadeIn 0.5s ease-in-out both; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -30,47 +28,20 @@
       );
     }
     .dot { position: absolute; width: 6px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; animation: floatUp 12s linear infinite; }
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(-100px) scale(1); opacity: 0; }
-    }
+    @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100px) scale(1); opacity: 0; } }
 
-    .carousel-dot {
-      width: 10px; height: 10px; background: #aaa; border-radius: 50%; display: inline-block; margin: 0 4px; cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+    .carousel-dot { width: 10px; height: 10px; background: #aaa; border-radius: 50%; display: inline-block; margin: 0 4px; cursor: pointer; transition: background-color 0.3s ease; }
     .carousel-dot.active { background: #38bdf8; }
     .carousel-dot:hover { background: #60a5fa; }
-    .carousel-img {
-      width: 100%; height: auto; object-fit: contain; opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
+    .carousel-img { width: 100%; height: auto; object-fit: contain; opacity: 0; transition: opacity 0.5s ease-in-out; }
     .carousel-img.loaded { opacity: 1; }
 
-    .card-buttons {
-      display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;
-    }
-    .card-buttons a {
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
-    }
-    .card-buttons .marketplace {
-      background-color: #22c55e;
-      color: white;
-    }
-    .card-buttons .marketplace:hover {
-      background-color: #16a34a;
-    }
-    .card-buttons .download {
-      background-color: #3b82f6;
-      color: white;
-    }
-    .card-buttons .download:hover {
-      background-color: #2563eb;
-    }
+    .card-buttons { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1rem; }
+    .card-buttons a { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; transition: background 0.2s, color 0.2s; }
+    .card-buttons .marketplace { background-color: #22c55e; color: white; }
+    .card-buttons .marketplace:hover { background-color: #16a34a; }
+    .card-buttons .download { background-color: #3b82f6; color: white; }
+    .card-buttons .download:hover { background-color: #2563eb; }
   </style>
 </head>
 <body class="relative text-white bg-gray-900 min-h-screen overflow-x-hidden">
@@ -124,15 +95,10 @@
         allData = await res.json();
         localStorage.setItem('freemcData', JSON.stringify(allData));
         renderGrid();
-      } catch (err) {
+      } catch {
         const stored = localStorage.getItem('freemcData');
-        if (stored) {
-          allData = JSON.parse(stored);
-          renderGrid();
-        } else {
-          noResults.textContent = 'Failed to load data.';
-          noResults.classList.remove('hidden');
-        }
+        if (stored) { allData = JSON.parse(stored); renderGrid(); }
+        else { noResults.textContent = 'Failed to load data.'; noResults.classList.remove('hidden'); }
       }
     }
 
@@ -152,16 +118,13 @@
 
       return `
         <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale fade-in">
-          <div id="${cid}" class="relative">
-            ${slides}
-            <div class="absolute bottom-2 w-full text-center">${dots}</div>
-          </div>
+          <div id="${cid}" class="relative">${slides}<div class="absolute bottom-2 w-full text-center">${dots}</div></div>
           <div class="p-4 flex flex-col gap-2">
             <h2 class="font-semibold text-lg text-blue-400">${truncate(item.title, 30)}</h2>
-            <p class="text-gray-300 text-sm">${truncate(item.description, 100)}</p>
+            <p class="text-gray-300 text-sm">${truncate(item.description || '', 100)}</p>
             <div class="card-buttons">
               <a href="${item.marketplace || '#'}" class="marketplace">Marketplace</a>
-              <a href="${item.url || '#'}" class="download">Download API</a>
+              <a href="${item.url || '#'}" class="download">Download</a>
             </div>
           </div>
         </div>
@@ -170,8 +133,7 @@
 
     function renderGrid() {
       const list = allData[currentTab] || [];
-      const q = searchInput.value.toLowerCase();
-      const filtered = list.filter(item => item.title.toLowerCase().includes(q));
+      const filtered = list.filter(item => item.title.toLowerCase().includes(searchInput.value.toLowerCase()));
       grid.innerHTML = filtered.length ? filtered.map(createCard).join('') : '';
       noResults.classList.toggle('hidden', filtered.length > 0);
       setupCarousels();
