@@ -10,123 +10,79 @@
   <style>
     .transition-scale { transition: transform 0.3s ease; }
     .transition-scale:hover { transform: scale(1.02); }
+
     .material-icons { font-size: 24px; transition: color 0.3s ease; }
-    .tooltip { position: relative; display: inline-block; }
-    .tooltip::after {
-      content: attr(data-tip);
-      position: absolute;
-      background: #333;
-      color: white;
-      padding: 4px 8px;
-      font-size: 12px;
-      border-radius: 4px;
-      top: 50%;
-      left: 100%;
-      transform: translateY(-50%);
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      pointer-events: none;
-      margin-left: 8px;
+
+    .desc {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      transition: all 0.3s ease;
     }
-    .tooltip:hover::after { opacity: 1; }
-    .tab { transition: all 0.3s ease; padding: 0.75rem; border-radius: 0.75rem; }
-    .tab:hover .material-icons { color: #38bdf8; }
-    .tab.active .material-icons { color: rgba(96, 165, 250, 0.6); }
-    .background-polaris {
-      background: repeating-linear-gradient(
-        45deg,
-        #0f172a 0px,
-        #0f172a 1px,
-        rgba(13,19,33) 1px,
-        rgba(13,19,33) 2px,
-        #0f172a 2px,
-        #0f172a 18px,
-        rgba(13,19,33) 18px,
-        rgba(13,19,33) 19px,
-        #0f172a 19px,
-        #0f172a 35px
-      );
+
+    .desc.expanded {
+      -webkit-line-clamp: unset;
+      max-height: none;
     }
-    .dot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background-color: rgba(255, 255, 255, 0.08);
-      border-radius: 9999px;
-      animation: floatUp 12s linear infinite;
+
+    .download-menu {
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(-100px) scale(1); opacity: 0; }
-    }
-    .carousel-dot {
-      width: 10px;
-      height: 10px;
-      background-color: #aaa;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .carousel-dot.active { background-color: #38bdf8; }
-    .carousel-dot:hover { background-color: #60a5fa; }
-    .card-buttons a:hover { transform: scale(1.05); }
-    .desc { max-height: 6rem; overflow: hidden; transition: max-height 0.3s ease; }
-    .desc.expanded { max-height: 500px; }
-    .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
-    @keyframes fadeIn { to { opacity: 1; } }
-    .dropdown { position: absolute; top: 2rem; right: 0; background: #1f2937; border-radius: 0.5rem; box-shadow: 0 10px 15px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 50; }
-    .dropdown.show { display: flex; animation: fadeIn 0.2s ease forwards; }
   </style>
 </head>
 <body class="relative text-white min-h-screen">
   <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
   </div>
   <div class="fixed top-4 right-4 z-50">
-    <button id="downloadToggle" class="text-white hover:text-blue-400">
-      <span class="material-icons">download</span>
+    <button id="download-toggle" class="material-icons bg-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-700">
+      download
     </button>
-    <div id="downloadMenu" class="dropdown">
-      <a href="https://example.com/android" target="_blank" class="px-4 py-2 hover:bg-gray-700">Android</a>
-      <a href="https://example.com/iphone" target="_blank" class="px-4 py-2 hover:bg-gray-700">iPhone</a>
+    <div id="download-menu" class="absolute right-0 mt-2 bg-gray-900 rounded-xl shadow-lg p-4 hidden download-menu">
+      <div class="flex flex-col space-y-2">
+        <a href="https://your-android-link.com" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-center">Android</a>
+        <a href="https://your-iphone-link.com" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-center">iPhone</a>
+      </div>
     </div>
   </div>
-  <div class="relative w-full bg-gray-900 text-white text-center py-3 text-sm z-40 shadow-inner flex justify-center items-center space-x-2 mt-10">
-    <span class="material-icons text-blue-400">lightbulb</span>
-    <span>
-      Have suggestions? <a href="https://form.typeform.com/to/UyA2yq19" target="_blank" class="text-blue-400 underline hover:text-blue-300">Let us know here</a>.
-    </span>
+  <div class="flex flex-col md:flex-row min-h-screen">
+    <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
+    </aside>
+    <main class="flex-1 p-4">
+      <input id="search-input" type="text" placeholder="Search..." class="w-full text-white bg-gray-800 px-4 py-3 rounded-xl shadow-lg mb-6" />
+      <h1 id="section-title" class="text-2xl font-bold capitalize mb-4">Worlds</h1>
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div id="no-results" class="text-gray-400 text-center mt-8 hidden">No results found.</div>
+    </main>
   </div>
 
   <script>
-    const downloadToggle = document.getElementById('downloadToggle');
-    const downloadMenu = document.getElementById('downloadMenu');
-    document.addEventListener('click', e => {
-      if (downloadToggle.contains(e.target)) {
-        downloadMenu.classList.toggle('show');
-      } else if (!downloadMenu.contains(e.target)) {
-        downloadMenu.classList.remove('show');
-      }
-    });
+    let currentTab = 'worlds';
+    let allData = JSON.parse(localStorage.getItem('freemcData')) || {};
+    const sectionTitle = document.getElementById('section-title');
+    const grid = document.getElementById('grid');
+    const searchInput = document.getElementById('search-input');
+    const noResults = document.getElementById('no-results');
+
+    function truncate(text, max = 100) {
+      return text.length > max ? text.slice(0, max) + '...' : text;
+    }
 
     function createCard(item) {
       const media = item.media || [item.banner];
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between fade-in">
-          ${createCarousel(media)}
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between animate-fade-in">
+          <img src="${media[0]}" class="w-full object-cover max-h-60" />
           <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
-            <p class="text-gray-300 text-sm mb-2 desc">${item.desc}</p>
-            <button class="text-blue-400 text-xs mb-2 toggle-desc">Show more</button>
-            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 card-buttons">
-              <a href="${item.download}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
-                <span class="material-icons">download</span><span>Download</span>
+            <p class="desc text-gray-300 text-sm mb-2">${item.desc}</p>
+            <button class="toggle-desc text-blue-400 text-sm underline mb-4 self-start">Show more</button>
+            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+              <a href="${item.download}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center">
+                <span class="material-icons mr-1">download</span>Download
               </a>
-              <a href="${item.marketplace}" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
-                <span class="material-icons">storefront</span><span>Marketplace</span>
+              <a href="${item.marketplace}" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center">
+                <span class="material-icons mr-1">storefront</span>Marketplace
               </a>
             </div>
           </div>
@@ -139,6 +95,7 @@
         const q = searchInput.value.toLowerCase();
         return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
       });
+
       grid.innerHTML = items.map(createCard).join('');
       noResults.classList.toggle('hidden', items.length > 0);
 
@@ -150,6 +107,31 @@
         });
       });
     }
+
+    document.getElementById('download-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('download-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+      const btn = document.getElementById('download-toggle');
+      const menu = document.getElementById('download-menu');
+      if (!btn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    fetch('./api.json')
+      .then(res => res.json())
+      .then(data => {
+        allData = data;
+        localStorage.setItem('freemcData', JSON.stringify(data));
+        renderGrid();
+      })
+      .catch(err => {
+        grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
+        console.error(err);
+      });
   </script>
 </body>
 </html>
