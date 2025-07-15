@@ -1,50 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FreeMC API Viewer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FreeMC API</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background: #1e293b; color: #fff; }
-    .card {
-      background: #334155;
-      padding: 1rem;
+    body {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: monospace;
+      padding: 2rem;
+    }
+
+    .json-viewer {
+      white-space: pre-wrap;
+      background-color: #1e293b;
+      padding: 1.5rem;
       border-radius: 1rem;
+      overflow-x: auto;
+      line-height: 1.6;
+      box-shadow: 0 0 0 1px #334155;
+      transition: opacity 0.5s ease, transform 0.5s ease;
       opacity: 0;
       transform: translateY(20px);
-      animation: fadeIn 0.5s forwards;
     }
-    .fade-delay { animation-delay: 0.2s; }
-    .img-animate { animation: popIn 0.5s ease-out; }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
+
+    .json-viewer.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
-    @keyframes popIn {
-      from { transform: translateY(-10px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+
+    .key {
+      color: #7dd3fc;
+    }
+
+    .string {
+      color: #86efac;
+    }
+
+    .number {
+      color: #facc15;
+    }
+
+    .boolean {
+      color: #f87171;
+    }
+
+    .null {
+      color: #f472b6;
     }
   </style>
 </head>
-<body class="p-6">
-  <h1 class="text-3xl font-bold mb-4">FreeMC API Viewer</h1>
-  <div id="container" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
+<body>
+  <h1 class="text-3xl font-bold mb-6 text-white">📡 FreeMC API Explorer</h1>
+  <div id="api-output" class="json-viewer"></div>
 
   <script>
-    fetch('API.json').then(r => r.json()).then(data => {
-      const container = document.getElementById('container');
-      Object.entries(data).forEach(([tab, items], idx) => {
-        items.forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'card fade-delay';
-          card.innerHTML = `
-            <img src="${item.banner}" alt="${item.title}" class="img-animate rounded mb-2 w-full" />
-            <h2 class="font-semibold text-xl">${item.title}</h2>
-            <p class="text-gray-300">${item.description}</p>
-          `;
-          container.appendChild(card);
-        });
+    function syntaxHighlight(json) {
+      if (typeof json != 'string') {
+        json = JSON.stringify(json, null, 2);
+      }
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(true|false|null)\b|\b-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?\b)/g, function (match) {
+        let cls = 'number';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'key';
+          } else {
+            cls = 'string';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'boolean';
+        } else if (/null/.test(match)) {
+          cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
       });
-    });
+    }
+
+    async function loadAPI() {
+      const res = await fetch('./API.json');
+      const data = await res.json();
+      const formatted = syntaxHighlight(data);
+      const container = document.getElementById('api-output');
+      container.innerHTML = formatted;
+      container.classList.add('visible');
+    }
+
+    loadAPI();
   </script>
 </body>
 </html>
