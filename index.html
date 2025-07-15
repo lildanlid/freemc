@@ -155,7 +155,7 @@
 
     async function loadData() {
       try {
-        const res = await fetch('API.json');
+        const res = await fetch('.api.json');
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         allData = await res.json();
         localStorage.setItem('freemcData', JSON.stringify(allData));
