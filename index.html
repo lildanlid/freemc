@@ -8,81 +8,177 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="icon" href="https://i.ibb.co/PZqhhj9Y/Minecoin-Logo-removebg-preview.png" type="image/png">
   <style>
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;overflow-x:hidden;background:#0f172a;color:#fff}
-    #search-input:focus{outline:none;box-shadow:none}
+    .transition-scale { transition: transform 0.3s ease, opacity 0.4s ease; }
+    .transition-scale:hover { transform: scale(1.02); }
 
-    .fade-in{animation:fadeIn .5s ease both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease-out;
+    }
 
-    .transition-scale{transition:transform .3s ease}
-    .transition-scale:hover{transform:scale(1.02)}
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-    .tab{cursor:pointer;transition:color .3s ease;padding:.75rem}
-    .tab.active .material-icons{color:rgba(96,165,250,.6)}
-    .tab:hover .material-icons{color:#38bdf8}
+    .carousel-img {
+      transition: opacity 0.4s ease;
+    }
 
-    .background-polaris{background:repeating-linear-gradient(45deg,#0f172a 0,#0f172a 1px,rgba(13,19,33)1px,rgba(13,19,33)2px,#0f172a 2px,#0f172a 18px,rgba(13,19,33)18px,rgba(13,19,33)19px,#0f172a 19px,#0f172a 35px)}
-    .dot{position:absolute;width:6px;height:6px;background:rgba(255,255,255,0.08);border-radius:9999px;animation:floatUp 12s linear infinite}
-    @keyframes floatUp{0%{transform:translateY(100vh) scale(.5);opacity:0}50%{opacity:1}100%{transform:translateY(-100px) scale(1);opacity:0}}
+    .carousel-img.fade {
+      opacity: 0;
+    }
 
-    .carousel-img{width:100%;object-fit:contain;opacity:0;transition:opacity .5s ease-in-out}
-    .carousel-img.loaded{opacity:1}
-    .carousel-dot{width:10px;height:10px;border-radius:50%;background:#aaa;margin:0 4px;cursor:pointer;transition:background .3s}
-    .carousel-dot.active{background:#38bdf8}
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #aaa;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-    .card-buttons{display:flex;justify-center;gap:1rem;margin-top:1rem}
-    .btn{padding:.5rem 1rem;border-radius:.5rem;font-weight:500;transition:transform .2s}
-    .btn.download{background:#3b82f6;color:#fff}
-    .btn.download:hover{transform:scale(1.05)}
-    .btn.marketplace{background:#22c55e;color:#fff}
-    .btn.marketplace:hover{transform:scale(1.05)}
+    .carousel-dot.active {
+      background-color: #38bdf8;
+    }
+
+    .carousel-dot:hover {
+      background-color: #60a5fa;
+    }
   </style>
 </head>
-<body class="relative text-white min-h-screen overflow-x-hidden">
-  <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
-    <div class="dot" style="left:5%;animation-delay:0s"></div>
-    <div class="dot" style="left:15%;animation-delay:1s"></div>
-    <div class="dot" style="left:25%;animation-delay:2s"></div>
-    <div class="dot" style="left:35%;animation-delay:3s"></div>
-    <div class="dot" style="left:45%;animation-delay:4s"></div>
-    <div class="dot" style="left:55%;animation-delay:2s"></div>
-    <div class="dot" style="left:65%;animation-delay:3s"></div>
-    <div class="dot" style="left:75%;animation-delay:1s"></div>
-    <div class="dot" style="left:85%;animation-delay:0.5s"></div>
-    <div class="dot" style="left:95%;animation-delay:2.5s"></div>
-  </div>
+<body class="relative text-white min-h-screen bg-gray-950">
   <div class="flex flex-col md:flex-row min-h-screen">
     <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
-      <button class="tab active" data-type="worlds"><span class="material-icons">public</span></button>
-      <button class="tab" data-type="addons"><span class="material-icons">extension</span></button>
-      <button class="tab" data-type="textures"><span class="material-icons">palette</span></button>
-      <button class="tab" data-type="skins"><span class="material-icons">checkroom</span></button>
+      <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
+        <span class="material-icons">public</span>
+      </button>
+      <button class="tab tooltip" data-type="addons" data-tip="Addons">
+        <span class="material-icons">extension</span>
+      </button>
+      <button class="tab tooltip" data-type="textures" data-tip="Textures">
+        <span class="material-icons">palette</span>
+      </button>
+      <button class="tab tooltip" data-type="skins" data-tip="Skins">
+        <span class="material-icons">checkroom</span>
+      </button>
     </aside>
+
     <main class="flex-1 p-4">
-      <div class="mb-6 transition-scale fade-in">
-        <input id="search-input" type="text" placeholder="Search..." class="w-full bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg" />
+      <div id="search-container" class="transition-all duration-300 mb-6">
+        <input id="search-input" type="text" placeholder="Search..."
+               class="w-full text-white bg-gray-800 px-4 py-3 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
-      <h1 id="section-title" class="text-2xl font-bold capitalize mb-4 fade-in">Worlds</h1>
+
+      <h1 id="section-title" class="text-2xl font-bold capitalize mb-4">Worlds</h1>
+
       <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      <div id="no-results" class="hidden text-center text-gray-400 mt-8">No results found.</div>
+      <div id="no-results" class="text-gray-400 text-center mt-8 hidden">No results found.</div>
     </main>
   </div>
-  <div class="relative w-full bg-gray-900 text-center py-3 text-sm z-40 shadow-inner flex justify-center items-center space-x-2 mt-10">
-    <span class="material-icons text-blue-400">lightbulb</span>
-    <span>Have suggestions? <a href="https://form.typeform.com/to/UyA2yq19" target="_blank" class="text-blue-400 underline hover:text-blue-300">Let us know here</a>.</span>
-  </div>
+
   <script>
-    let currentTab = 'worlds', allData = {};
-    const tabs = document.querySelectorAll('.tab'), sectionTitle = document.getElementById('section-title'), grid = document.getElementById('grid'), searchInput = document.getElementById('search-input'), noResults = document.getElementById('no-results');
-    tabs.forEach(tab => tab.onclick = () => { currentTab = tab.dataset.type; tabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); sectionTitle.textContent = tab.dataset.type; renderGrid(); });
-    searchInput.oninput = renderGrid;
-    async function loadData() { try { const r = await fetch('api.json'); if (!r.ok) throw ''; allData = await r.json(); localStorage.setItem('freemcData', JSON.stringify(allData)); renderGrid(); } catch { const s = localStorage.getItem('freemcData'); if (s) { allData = JSON.parse(s); renderGrid(); } else { noResults.textContent = 'Failed to load data.'; noResults.classList.remove('hidden'); } } }
-    function truncate(t,m=100){return t?(t.length>m?t.slice(0,m)+'...':t):''}
-    function createCard(item){const media=item.media?.length?item.media:(item.banner?[item.banner]:[]), id='c_'+Math.random().toString(36).substr(2,6); const slides=media.map((src,i)=>`<img src="${src}" class="carousel-img ${i?'hidden':''} fade-in" onload="this.classList.add('loaded')" data-idx="${i}"/>`).join(''); const dots=media.map((_,i)=>`<span class="carousel-dot ${!i?'active':''}" data-idx="${i}" data-id="${id}"></span>`).join(''); return `<div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale fade-in"><div id="${id}" class="relative">${slides}<div class="absolute bottom-2 w-full text-center">${dots}</div></div><div class="p-4"><h2 class="font-semibold text-lg text-blue-400">${truncate(item.title,30)}</h2><p class="text-gray-300 text-sm">${truncate(item.description,100)}</p><div class="card-buttons"><a href="${item.url||'#'}" class="btn download">Download</a><a href="${item.marketplace||'#'}" class="btn marketplace">Marketplace</a></div></div></div>`; }
-    function renderGrid(){const list=allData[currentTab]||[],f=list.filter(i=>i.title.toLowerCase().includes(searchInput.value.toLowerCase())); grid.innerHTML=f.map(createCard).join(''); noResults.classList.toggle('hidden',f.length>0); setupCarousel(); }
-    function setupCarousel(){document.querySelectorAll('.carousel-dot').forEach(dot=>dot.onclick=()=>{const idx=+dot.dataset.idx,id=dot.dataset.id,c=document.getElementById(id);c.querySelectorAll('.carousel-img').forEach((img,i)=>img.classList.toggle('hidden',i!==idx));c.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));}));}
-    document.addEventListener('DOMContentLoaded',()=>loadData());
+    let currentTab = 'worlds';
+    let allData = {};
+
+    const tabs = document.querySelectorAll('.tab');
+    const sectionTitle = document.getElementById('section-title');
+    const grid = document.getElementById('grid');
+    const searchInput = document.getElementById('search-input');
+    const noResults = document.getElementById('no-results');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        currentTab = tab.dataset.type;
+        sectionTitle.textContent = currentTab;
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderGrid();
+      });
+    });
+
+    searchInput.addEventListener('input', renderGrid);
+
+    function createCarousel(images = []) {
+      if (!images || images.length === 0) return '';
+
+      const dots = images.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`).join('');
+
+      return `
+        <div class="relative w-full overflow-hidden">
+          <img src="${images[0]}" class="carousel-img w-full object-cover h-64 rounded-t-2xl" />
+          <div class="absolute bottom-2 w-full text-center">${dots}</div>
+        </div>
+      `;
+    }
+
+    function createCard(item) {
+      const media = item.media && item.media.length ? item.media : [item.banner || ''];
+      return `
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale fade-in">
+          ${createCarousel(media)}
+          <div class="p-4">
+            <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGrid() {
+      const query = searchInput.value.toLowerCase();
+      const items = (allData[currentTab] || []).filter(item =>
+        item.title.toLowerCase().includes(query)
+      );
+
+      grid.innerHTML = items.map(createCard).join('');
+      noResults.classList.toggle('hidden', items.length > 0);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-in').forEach(card => observer.observe(card));
+
+      document.querySelectorAll('.carousel-dot').forEach(dot => {
+        dot.addEventListener('click', function () {
+          const index = +this.dataset.index;
+          const container = this.closest('.relative');
+          const img = container.querySelector('.carousel-img');
+          const dots = container.querySelectorAll('.carousel-dot');
+
+          const parentCard = container.closest('.fade-in');
+          const title = parentCard.querySelector('h2').textContent;
+          const media = (allData[currentTab] || []).find(item => item.title === title)?.media || [];
+
+          if (media[index]) {
+            img.classList.add('fade');
+            setTimeout(() => {
+              img.src = media[index];
+              img.classList.remove('fade');
+              dots.forEach(d => d.classList.remove('active'));
+              this.classList.add('active');
+            }, 200);
+          }
+        });
+      });
+    }
+
+    fetch('./api.json')
+      .then(res => res.json())
+      .then(data => {
+        allData = data;
+        renderGrid();
+        document.querySelector(`.tab[data-type="${currentTab}"]`).classList.add('active');
+      })
+      .catch(err => {
+        grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
+        console.error(err);
+      });
   </script>
 </body>
 </html>
