@@ -8,26 +8,85 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="icon" href="https://i.ibb.co/PZqhhj9Y/Minecoin-Logo-removebg-preview.png" type="image/png">
   <style>
-    .transition-scale { transition: transform 0.3s ease, opacity 0.4s ease; }
+    .transition-scale { transition: transform 0.3s ease; }
     .transition-scale:hover { transform: scale(1.02); }
 
-    .fade-in {
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.5s ease-out;
-    }
+    .material-icons { font-size: 24px; transition: color 0.3s ease; }
 
-    .fade-in.visible {
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip::after {
+      content: attr(data-tip);
+      position: absolute;
+      background: #333;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      margin-left: 8px;
+    }
+    .tooltip:hover::after {
       opacity: 1;
-      transform: translateY(0);
     }
 
-    .carousel-img {
-      transition: opacity 0.4s ease;
+    .tab {
+      transition: all 0.3s ease;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+    }
+    .tab:hover .material-icons {
+      color: #38bdf8;
+    }
+    .tab.active .material-icons {
+      color: rgba(96, 165, 250, 0.6);
     }
 
-    .carousel-img.fade {
-      opacity: 0;
+    .background-polaris {
+      background: repeating-linear-gradient(
+        45deg,
+        #0f172a 0px,
+        #0f172a 1px,
+        rgba(13,19,33) 1px,
+        rgba(13,19,33) 2px,
+        #0f172a 2px,
+        #0f172a 18px,
+        rgba(13,19,33) 18px,
+        rgba(13,19,33) 19px,
+        #0f172a 19px,
+        #0f172a 35px
+      );
+    }
+
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      animation: floatUp 12s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
     }
 
     .carousel-dot {
@@ -48,9 +107,27 @@
     .carousel-dot:hover {
       background-color: #60a5fa;
     }
+
+    .card-buttons a:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
-<body class="relative text-white min-h-screen bg-gray-950">
+<body class="relative text-white min-h-screen">
+  <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
+    <!-- Floating dots -->
+    <div class="dot" style="left: 5%; animation-delay: 0s;"></div>
+    <div class="dot" style="left: 15%; animation-delay: 1s;"></div>
+    <div class="dot" style="left: 25%; animation-delay: 2s;"></div>
+    <div class="dot" style="left: 35%; animation-delay: 3s;"></div>
+    <div class="dot" style="left: 45%; animation-delay: 4s;"></div>
+    <div class="dot" style="left: 55%; animation-delay: 2s;"></div>
+    <div class="dot" style="left: 65%; animation-delay: 3s;"></div>
+    <div class="dot" style="left: 75%; animation-delay: 1s;"></div>
+    <div class="dot" style="left: 85%; animation-delay: 0.5s;"></div>
+    <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
+  </div>
+
   <div class="flex flex-col md:flex-row min-h-screen">
     <aside class="w-full md:w-20 bg-gray-800 m-4 rounded-3xl p-6 flex md:flex-col flex-row items-center justify-around md:space-y-10 space-x-6 md:space-x-0 shadow-lg">
       <button class="tab tooltip" data-type="worlds" data-tip="Worlds">
@@ -80,10 +157,16 @@
     </main>
   </div>
 
+  <div class="relative w-full bg-gray-900 text-white text-center py-3 text-sm z-40 shadow-inner flex justify-center items-center space-x-2 mt-10">
+    <span class="material-icons text-blue-400">lightbulb</span>
+    <span>
+      Have suggestions? <a href="https://form.typeform.com/to/UyA2yq19" target="_blank" class="text-blue-400 underline hover:text-blue-300">Let us know here</a>.
+    </span>
+  </div>
+
   <script>
     let currentTab = 'worlds';
-    let allData = {};
-
+    let allData = JSON.parse(localStorage.getItem('freemcData')) || {};
     const tabs = document.querySelectorAll('.tab');
     const sectionTitle = document.getElementById('section-title');
     const grid = document.getElementById('grid');
@@ -102,67 +185,66 @@
 
     searchInput.addEventListener('input', renderGrid);
 
+    function truncate(text, max = 100) {
+      return text.length > max ? text.slice(0, max) + '...' : text;
+    }
+
     function createCarousel(images = []) {
-      if (!images || images.length === 0) return '';
-
-      const dots = images.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`).join('');
-
+      if (images.length === 0) return '';
+      const dots = images.map((_, i) => `<span class="carousel-dot" data-index="${i}"></span>`).join('');
       return `
         <div class="relative w-full overflow-hidden">
-          <img src="${images[0]}" class="carousel-img w-full object-cover h-64 rounded-t-2xl" />
+          <img src="${images[0]}" class="carousel-img w-full object-contain bg-black max-h-80 rounded-t-2xl" />
           <div class="absolute bottom-2 w-full text-center">${dots}</div>
         </div>
       `;
     }
 
     function createCard(item) {
-      const media = item.media && item.media.length ? item.media : [item.banner || ''];
+      const media = item.media || [item.banner];
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale fade-in">
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
           ${createCarousel(media)}
-          <div class="p-4">
+          <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
+            <p class="text-gray-300 text-sm mb-4 flex-grow">${truncate(item.desc)}</p>
+            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 card-buttons">
+              <a href="${item.download}" target="_blank"
+                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
+                <span class="material-icons">download</span><span>Download</span>
+              </a>
+              <a href="${item.marketplace}" target="_blank"
+                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded flex justify-center items-center space-x-1 transition-transform">
+                <span class="material-icons">storefront</span><span>Marketplace</span>
+              </a>
+            </div>
           </div>
         </div>
       `;
     }
 
     function renderGrid() {
-      const query = searchInput.value.toLowerCase();
-      const items = (allData[currentTab] || []).filter(item =>
-        item.title.toLowerCase().includes(query)
-      );
+      const items = (allData[currentTab] || []).filter(item => {
+        const q = searchInput.value.toLowerCase();
+        return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
+      });
 
       grid.innerHTML = items.map(createCard).join('');
       noResults.classList.toggle('hidden', items.length > 0);
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.fade-in').forEach(card => observer.observe(card));
 
       document.querySelectorAll('.carousel-dot').forEach(dot => {
         dot.addEventListener('click', function () {
           const index = +this.dataset.index;
           const container = this.closest('.relative');
           const img = container.querySelector('.carousel-img');
-          const dots = container.querySelectorAll('.carousel-dot');
+          const media = allData[currentTab].find(item =>
+            item.media && item.media.includes(img.src)
+          )?.media;
 
-          const parentCard = container.closest('.fade-in');
-          const title = parentCard.querySelector('h2').textContent;
-          const media = (allData[currentTab] || []).find(item => item.title === title)?.media || [];
-
-          if (media[index]) {
-            img.classList.add('fade');
-            setTimeout(() => {
-              img.src = media[index];
-              img.classList.remove('fade');
-              dots.forEach(d => d.classList.remove('active'));
-              this.classList.add('active');
-            }, 200);
+          if (media && media[index]) {
+            img.src = media[index];
+            container.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
           }
         });
       });
@@ -172,11 +254,12 @@
       .then(res => res.json())
       .then(data => {
         allData = data;
+        localStorage.setItem('freemcData', JSON.stringify(data));
         renderGrid();
-        document.querySelector(`.tab[data-type="${currentTab}"]`).classList.add('active');
+        document.querySelector(`.tab[data-type=\"${currentTab}\"]`).classList.add('active');
       })
       .catch(err => {
-        grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
+        grid.innerHTML = `<div class=\"text-red-500\">Failed to load API.</div>`;
         console.error(err);
       });
   </script>
