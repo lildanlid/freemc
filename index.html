@@ -111,11 +111,20 @@
     .card-buttons a:hover {
       transform: scale(1.05);
     }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body class="relative text-white min-h-screen">
   <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
-    <!-- Floating dots -->
     <div class="dot" style="left: 5%; animation-delay: 0s;"></div>
     <div class="dot" style="left: 15%; animation-delay: 1s;"></div>
     <div class="dot" style="left: 25%; animation-delay: 2s;"></div>
@@ -203,7 +212,7 @@
     function createCard(item) {
       const media = item.media || [item.banner];
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
+        <div class="card fade-in-up bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
           ${createCarousel(media)}
           <div class="p-4 flex flex-col flex-grow">
             <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
@@ -223,6 +232,21 @@
       `;
     }
 
+    function animateOnScroll() {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
     function renderGrid() {
       const items = (allData[currentTab] || []).filter(item => {
         const q = searchInput.value.toLowerCase();
@@ -231,6 +255,8 @@
 
       grid.innerHTML = items.map(createCard).join('');
       noResults.classList.toggle('hidden', items.length > 0);
+
+      animateOnScroll();
 
       document.querySelectorAll('.carousel-dot').forEach(dot => {
         dot.addEventListener('click', function () {
@@ -256,10 +282,10 @@
         allData = data;
         localStorage.setItem('freemcData', JSON.stringify(data));
         renderGrid();
-        document.querySelector(`.tab[data-type=\"${currentTab}\"]`).classList.add('active');
+        document.querySelector(`.tab[data-type="${currentTab}"]`).classList.add('active');
       })
       .catch(err => {
-        grid.innerHTML = `<div class=\"text-red-500\">Failed to load API.</div>`;
+        grid.innerHTML = `<div class="text-red-500">Failed to load API.</div>`;
         console.error(err);
       });
   </script>
