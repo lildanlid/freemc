@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FreeMC API Viewer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #1e293b; color: #fff; }
+    .card {
+      background: #334155;
+      padding: 1rem;
+      border-radius: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.5s forwards;
+    }
+    .fade-delay { animation-delay: 0.2s; }
+    .img-animate { animation: popIn 0.5s ease-out; }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold mb-4">FreeMC API Viewer</h1>
+  <div id="container" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
+
+  <script>
+    fetch('API.json').then(r => r.json()).then(data => {
+      const container = document.getElementById('container');
+      Object.entries(data).forEach(([tab, items], idx) => {
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card fade-delay';
+          card.innerHTML = `
+            <img src="${item.banner}" alt="${item.title}" class="img-animate rounded mb-2 w-full" />
+            <h2 class="font-semibold text-xl">${item.title}</h2>
+            <p class="text-gray-300">${item.description}</p>
+          `;
+          container.appendChild(card);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
