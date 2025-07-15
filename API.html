@@ -80,7 +80,7 @@
     }
 
     async function loadAPI() {
-      const res = await fetch('./API.json');
+      const res = await fetch('API.json');
       const data = await res.json();
       const formatted = syntaxHighlight(data);
       const container = document.getElementById('api-output');
