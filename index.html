@@ -140,20 +140,26 @@
       opacity: 1;
       transform: scaleX(1);
     }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    #search-input:focus {
+      outline: none;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body class="relative text-white min-h-screen bg-gray-900 overflow-x-hidden">
   <div class="absolute inset-0 z-[-1] background-polaris overflow-hidden">
-    <div class="dot" style="left: 5%; animation-delay: 0s;"></div>
-    <div class="dot" style="left: 15%; animation-delay: 1s;"></div>
-    <div class="dot" style="left: 25%; animation-delay: 2s;"></div>
-    <div class="dot" style="left: 35%; animation-delay: 3s;"></div>
-    <div class="dot" style="left: 45%; animation-delay: 4s;"></div>
-    <div class="dot" style="left: 55%; animation-delay: 2s;"></div>
-    <div class="dot" style="left: 65%; animation-delay: 3s;"></div>
-    <div class="dot" style="left: 75%; animation-delay: 1s;"></div>
-    <div class="dot" style="left: 85%; animation-delay: 0.5s;"></div>
-    <div class="dot" style="left: 95%; animation-delay: 2.5s;"></div>
   </div>
 
   <div class="flex flex-col md:flex-row min-h-screen">
@@ -197,13 +203,17 @@
         <i class="material-icons text-gray-900 text-2xl">download</i>
       </button>
       <div id="menuItems" class="flex items-center gap-4 ml-2 menu-items hidden">
-        <a href="https://www.android.com" target="_blank" class="text-gray-900 hover:bg-gray-200 rounded px-2 py-1 transition">Android</a>
-        <a href="https://www.apple.com/iphone/" target="_blank" class="text-gray-900 hover:bg-gray-200 rounded px-2 py-1 transition">iPhone</a>
+        <a href="https://lootdest.org/s?RdMdy9Jl" target="_blank" class="text-gray-900 hover:bg-gray-200 rounded px-2 py-1 transition">Android</a>
+        <a href="http://www.idk.com/" target="_blank" class="text-gray-900 hover:bg-gray-200 rounded px-2 py-1 transition">iPhone</a>
       </div>
     </div>
   </div>
 
   <script>
+    window.addEventListener('beforeunload', () => {
+      window.scrollTo(0, 0);
+    });
+
     const toggleMenu = document.getElementById('toggleMenu');
     const menu = document.getElementById('menu');
     const menuItems = document.getElementById('menuItems');
@@ -239,18 +249,27 @@
       }
     });
 
-    let currentTab = 'worlds';
+    let currentTab = localStorage.getItem('currentTab') || 'worlds';
     let allData = JSON.parse(localStorage.getItem('freemcData')) || {};
     const tabs = document.querySelectorAll('.tab');
     const sectionTitle = document.getElementById('section-title');
     const grid = document.getElementById('grid');
     const searchInput = document.getElementById('search-input');
     const noResults = document.getElementById('no-results');
-
+    document.addEventListener('DOMContentLoaded', () => {
+      tabs.forEach(tab => {
+        if (tab.dataset.type === currentTab) {
+          tab.classList.add('active');
+          sectionTitle.textContent = tab.dataset.type.charAt(0).toUpperCase() + tab.dataset.type.slice(1);
+        }
+      });
+      renderGrid();
+    });
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         currentTab = tab.dataset.type;
-        sectionTitle.textContent = currentTab;
+        localStorage.setItem('currentTab', currentTab);
+        sectionTitle.textContent = currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         renderGrid();
@@ -268,7 +287,7 @@
       const dots = images.map((_, i) => `<span class="carousel-dot" data-index="${i}"></span>`).join('');
       return `
         <div class="relative w-full overflow-hidden">
-          <img src="${images[0]}" class="carousel-img w-full object-contain bg-black max-h-80 rounded-t-2xl" />
+          <img src="${images[0]}" class="carousel-img w-full object-contain bg-black max-h-80 rounded-t-2xl fade-in" />
           <div class="absolute bottom-2 w-full text-center">${dots}</div>
         </div>
       `;
@@ -277,7 +296,7 @@
     function createCard(item) {
       const media = item.media || [item.banner];
       return `
-        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between">
+        <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg transition-scale flex flex-col justify-between fade-in">
           ${createCarousel(media)}
           <div class="p-4 flex flex-col gap-2">
             <h2 class="font-semibold text-lg text-blue-400">${truncate(item.title, 30)}</h2>
